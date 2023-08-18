@@ -256,7 +256,7 @@ function updateMap() {
     map.getSource('noiseData').setData(roadsGeoJSON);
 
     // Adjust the opacity of the lines to blend them with the map
-    map.setPaintProperty('noiseLines', 'line-opacity', 0.3);
+    map.setPaintProperty('noiseLines', 'line-opacity', 0.4);
 }
 
 
