@@ -15,10 +15,13 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.3.0/turf.min.js"></script>
     
+    <script src="https://www.gstatic.com/firebasejs/10.2.0/firebase-app.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/10.2.0/firebase-analytics.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/10.2.0/firebase-firestore.js"></script>
+
     <script>
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.2.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.2.0/firebase-analytics.js";
-  
         const firebaseConfig = {
             apiKey: "AIzaSyACIktKqur--VAnlHfG8SIF5cWiGuJcwNI",
             authDomain: "noise-map-ca8d4.firebaseapp.com",
@@ -35,7 +38,7 @@
 
         // Initialize Firestore
         const db = firebase.firestore();
-        </script>
+    </script>
 </head>
 
 <body>
