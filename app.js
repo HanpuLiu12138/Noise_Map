@@ -46,10 +46,10 @@ function logData(latitude, longitude, roadsGeoJSON) {
 
   setTimeout(() => {
     isThrottled = false;
-  }, 2000); // Throttle for 2 seconds
+  }, 5000); // Throttle for 5 seconds
 }
 
-const throttledUpdateMap = throttle(updateMap, 10000); // Update map at most every 2 seconds
+const throttledUpdateMap = throttle(updateMap, 5000); // Update map at most every 5 seconds
 
 registerBluetoothDataSource(BluetoothDataSources, "90D3D000-C950-4DD6-9410-2B7AEB1DD7D8", "d3683933-d930-4a99-9fed-4b3d44d9e4f0", blehandle_sint16, '', '');
 
