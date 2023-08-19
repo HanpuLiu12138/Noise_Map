@@ -114,7 +114,18 @@ ConnectSourceButton.addEventListener('click', function() {
     });
 });
 
+function fetchNoiseData() {
+    db.collection("noiseData").get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            points.push(data);
+        });
+        throttledUpdateMap(); // Update the map after fetching all data
+    });
+}
+
 map.on('load', function() {
+    fetchNoiseData();
     map.addSource('noiseData', {
         'type': 'geojson',
         'data': {
@@ -155,10 +166,13 @@ function connectBlueToothCharacteristic(BluetoothDevice, BluetoothServiceUUID, B
         .then(characteristic => characteristic.addEventListener('characteristicvaluechanged', function(event) { ValueHandler(event, TargetSelector, DataLog); }));
 }
 
+// Initialize Firestore
+const db = firebase.firestore();
+
 function blehandle_sint16(event, TargetSelector, DataLog) {
     const dbValue = event.target.value.getInt16(0, false) / 100;
     console.log("Noise Level:", dbValue);  // Log the noise level
-    
+
     navigator.geolocation.getCurrentPosition(function(position) {
         var latitude = position.coords.latitude;
         var longitude = position.coords.longitude;
@@ -168,7 +182,6 @@ function blehandle_sint16(event, TargetSelector, DataLog) {
         let snappedPoint = turf.nearestPointOnLine(roadsGeoJSON, gpsPoint);
         let lineKey = JSON.stringify(snappedPoint.geometry.coordinates);
         linesWithPoints[lineKey] = true;
-    
 
         // Check the distance between the GPS point and the snapped point
         let distance = turf.distance(gpsPoint, snappedPoint);
@@ -182,15 +195,31 @@ function blehandle_sint16(event, TargetSelector, DataLog) {
         longitude = snappedPoint.geometry.coordinates[0];
 
         logData(latitude, longitude, roadsGeoJSON); // Call the throttled logging function
-        
+
         // Check if latitude and longitude are valid numbers
         if (typeof latitude !== 'number' || typeof longitude !== 'number') {
             console.error("Invalid GPS coordinates:", latitude, longitude);
             return;
         }
-        
+
         points.push({ latitude: latitude, longitude: longitude, noiseLevel: dbValue });
         throttledUpdateMap();
+
+        // Store data in Firestore
+        const noiseData = {
+            latitude: latitude,
+            longitude: longitude,
+            noiseLevel: dbValue,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp() // adds a server timestamp
+        };
+
+        db.collection("noiseData").add(noiseData)
+            .then(docRef => {
+                console.log("Document written with ID: ", docRef.id);
+            })
+            .catch(error => {
+                console.error("Error adding document: ", error);
+            });
     });
 }
 
