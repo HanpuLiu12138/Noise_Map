@@ -288,7 +288,12 @@ function updateMap() {
         }
     });
 
-    map.getSource('noiseData').setData(roadsGeoJSON);
+    if (map.getSource('noiseData')) {
+      map.getSource('noiseData').setData(roadsGeoJSON);
+    } else {
+      console.error("'noiseData' source has not been added to the map yet.");
+    }
+
 
     // Adjust the opacity of the lines to blend them with the map
     map.setPaintProperty('noiseLines', 'line-opacity', 0.4);
