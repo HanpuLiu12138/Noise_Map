@@ -286,6 +286,13 @@ function updateMap() {
 
     // Adjust the opacity of the lines to blend them with the map
     map.setPaintProperty('noiseLines', 'line-opacity', 0.4);
+
+      const noiseDataSource = map.getSource('noiseData');
+    if (noiseDataSource) {
+        noiseDataSource.setData(roadsGeoJSON);
+    } else {
+        console.error("'noiseData' source has not been added to the map yet.");
+    }
 }
 
 
