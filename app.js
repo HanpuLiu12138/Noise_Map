@@ -1,3 +1,4 @@
+document.addEventListener('DOMContentLoaded', (event) => {
 mapboxgl.accessToken = 'pk.eyJ1Ijoic3BlY3RhdG9yMTIxIiwiYSI6ImNsanh0OHZ2YjA3NTAzZ3BhbW1ueHpsMTUifQ.UT_rGnGgU7N1UsVc8Tfypw'; 
 var map = new mapboxgl.Map({
   container: 'map',
@@ -225,9 +226,9 @@ function blehandle_sint16(event, TargetSelector, DataLog) {
 
 
 function updateMap() {
-    if (!map.isLoaded()) {
-        console.warn("Map is not fully loaded yet.");
-        return;
+    if (!map.loaded()) {
+      console.warn("Map is not fully loaded yet.");
+      return;
     }
 
     let linesWithPoints = {}; // To keep track of lines with points
@@ -310,3 +311,4 @@ function getColorForNoiseLevel(noiseLevel) {
     return '#454545';
 }
 
+});
