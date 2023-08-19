@@ -168,8 +168,6 @@ function connectBlueToothCharacteristic(BluetoothDevice, BluetoothServiceUUID, B
         .then(characteristic => characteristic.addEventListener('characteristicvaluechanged', function(event) { ValueHandler(event, TargetSelector, DataLog); }));
 }
 
-// Initialize Firestore
-const db = firebase.firestore();
 
 function blehandle_sint16(event, TargetSelector, DataLog) {
     const dbValue = event.target.value.getInt16(0, false) / 100;
