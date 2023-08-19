@@ -145,6 +145,8 @@ map.on('load', function() {
         }
     });
     map.moveLayer('noiseLines');  // Move the 'noiseLines' layer to the top
+
+    throttledUpdateMap(); // Update the map after fetching all data and ensuring the map is loaded
 });
 
 function registerBluetoothDataSource(BluetoothDataSourcesArray, BluetoothServiceUUID, BluetoothCharacteristicUUID, ValueHandler, TargetSelector, DataLog) {
@@ -225,6 +227,11 @@ function blehandle_sint16(event, TargetSelector, DataLog) {
 
 
 function updateMap() {
+    if (!map.isLoaded()) {
+        console.warn("Map is not fully loaded yet.");
+        return;
+    }
+
     let linesWithPoints = {}; // To keep track of lines with points
 
     points.forEach(function(point, index) {
@@ -287,7 +294,7 @@ function updateMap() {
     // Adjust the opacity of the lines to blend them with the map
     map.setPaintProperty('noiseLines', 'line-opacity', 0.4);
 
-      const noiseDataSource = map.getSource('noiseData');
+    const noiseDataSource = map.getSource('noiseData');
     if (noiseDataSource) {
         noiseDataSource.setData(roadsGeoJSON);
     } else {
