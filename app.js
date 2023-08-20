@@ -309,9 +309,12 @@ function updateMap() {
 
 function getColorForNoiseLevel(noiseLevel) {
     if (noiseLevel > 80) return 'red';
+    if (noiseLevel > 70) return 'purple';
     if (noiseLevel > 60) return 'pink';
-    if (noiseLevel > 40) return 'orange';
-    if (noiseLevel > 20) return 'yellow';
+    if (noiseLevel > 55) return 'orange';
+    if (noiseLevel > 50) return 'yellow';
+    if (noiseLevel > 45) return 'green';
+    if (noiseLevel > 40) return 'blue';
     if (noiseLevel > 0) return 'white';
     return '#454545';
 }
