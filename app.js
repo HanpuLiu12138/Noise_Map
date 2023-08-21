@@ -13,6 +13,11 @@ var points = [];
 let linesWithPoints = {}; // To keep track of lines with points
 
 
+// Function to get a unique identifier for a road segment
+function getRoadSegmentId(coordinates) {
+  return coordinates.map(coord => coord.join(',')).join(';');
+}
+  
 function throttle(func, limit) {
     let lastFunc;
     let lastRan;
@@ -172,7 +177,7 @@ function connectBlueToothCharacteristic(BluetoothDevice, BluetoothServiceUUID, B
 
 function blehandle_sint16(event, TargetSelector, DataLog) {
     const dbValue = event.target.value.getInt16(0, false) / 100;
-    console.log("Noise Level:", dbValue);  // Log the noise level
+    console.log("Noise Level:", dbValue);
 
     navigator.geolocation.getCurrentPosition(function(position) {
         var latitude = position.coords.latitude;
@@ -181,8 +186,7 @@ function blehandle_sint16(event, TargetSelector, DataLog) {
         // Snap the GPS point to the nearest road
         let gpsPoint = turf.point([longitude, latitude]);
         let snappedPoint = turf.nearestPointOnLine(roadsGeoJSON, gpsPoint);
-        let lineKey = JSON.stringify(snappedPoint.geometry.coordinates);
-        linesWithPoints[lineKey] = true;
+        let roadSegmentId = getRoadSegmentId(snappedPoint.geometry.coordinates);
 
         // Check the distance between the GPS point and the snapped point
         let distance = turf.distance(gpsPoint, snappedPoint);
@@ -195,7 +199,7 @@ function blehandle_sint16(event, TargetSelector, DataLog) {
         latitude = snappedPoint.geometry.coordinates[1];
         longitude = snappedPoint.geometry.coordinates[0];
 
-        logData(latitude, longitude, roadsGeoJSON); // Call the throttled logging function
+        logData(latitude, longitude, roadsGeoJSON);
 
         // Check if latitude and longitude are valid numbers
         if (typeof latitude !== 'number' || typeof longitude !== 'number') {
@@ -203,27 +207,28 @@ function blehandle_sint16(event, TargetSelector, DataLog) {
             return;
         }
 
-        points.push({ latitude: latitude, longitude: longitude, noiseLevel: dbValue });
-        throttledUpdateMap();
-
         // Store data in Firestore
         const noiseData = {
             latitude: latitude,
             longitude: longitude,
             noiseLevel: dbValue,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp() // adds a server timestamp
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
         };
 
-        db.collection("noiseData").add(noiseData)
-            .then(docRef => {
-                console.log("Document written with ID: ", docRef.id);
-            })
-            .catch(error => {
-                console.error("Error adding document: ", error);
-            });
+        // Check if there's existing data for the road segment
+        db.collection("noiseData").doc(roadSegmentId).get().then((doc) => {
+            if (doc.exists) {
+                // Update the existing document with new data
+                db.collection("noiseData").doc(roadSegmentId).update(noiseData);
+            } else {
+                // Create a new document with the new data
+                db.collection("noiseData").doc(roadSegmentId).set(noiseData);
+            }
+        }).catch(error => {
+            console.error("Error accessing document: ", error);
+        });
     });
 }
-
 
 function updateMap() {
     if (!map.loaded()) {
