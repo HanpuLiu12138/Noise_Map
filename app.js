@@ -20,7 +20,7 @@ function getRoadSegmentId(coordinates) {
     }
 
     return coordinates.map(coord => {
-        if (!Array.isArray(coord) || coord.length !== 2) {
+        if (!Array.isArray(coord) || coord.length !== 2 || typeof coord[0] !== 'number' || typeof coord[1] !== 'number') {
             console.error("Invalid coordinate pair:", coord);
             return '';
         }
@@ -196,7 +196,7 @@ function blehandle_sint16(event, TargetSelector, DataLog) {
         // Snap the GPS point to the nearest road
         let gpsPoint = turf.point([longitude, latitude]);
         let snappedPoint = turf.nearestPointOnLine(roadsGeoJSON, gpsPoint);
-        let roadSegmentId = getRoadSegmentId(snappedPoint.geometry.coordinates);
+        let roadSegmentId = getRoadSegmentId([snappedPoint.geometry.coordinates]);
 
         // Check the distance between the GPS point and the snapped point
         let distance = turf.distance(gpsPoint, snappedPoint);
