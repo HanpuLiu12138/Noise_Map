@@ -13,9 +13,19 @@ var points = [];
 let linesWithPoints = {}; // To keep track of lines with points
 
 
-// Function to get a unique identifier for a road segment
 function getRoadSegmentId(coordinates) {
-  return coordinates.map(coord => coord.join(',')).join(';');
+    if (!Array.isArray(coordinates)) {
+        console.error("Invalid coordinates:", coordinates);
+        return null;
+    }
+
+    return coordinates.map(coord => {
+        if (!Array.isArray(coord) || coord.length !== 2) {
+            console.error("Invalid coordinate pair:", coord);
+            return '';
+        }
+        return coord.join(',');
+    }).join(';');
 }
   
 function throttle(func, limit) {
