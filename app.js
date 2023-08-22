@@ -134,11 +134,13 @@ function fetchNoiseData() {
     db.collection("noiseData").get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
             const data = doc.data();
+            console.log("Fetched data:", data);
             points.push(data);
         });
         throttledUpdateMap(); // Update the map after fetching all data
     });
 }
+
 
 map.on('load', function() {
     fetchNoiseData();
@@ -241,6 +243,7 @@ function blehandle_sint16(event, TargetSelector, DataLog) {
 }
 
 function updateMap() {
+    console.log("Updating map with points:", points);
     if (!map.loaded()) {
       console.warn("Map is not fully loaded yet.");
       return;
@@ -304,6 +307,7 @@ function updateMap() {
     });
 
     if (map.getSource('noiseData')) {
+      console.log("Setting data for 'noiseData' source:", roadsGeoJSON);
       map.getSource('noiseData').setData(roadsGeoJSON);
     } else {
       console.error("'noiseData' source has not been added to the map yet.");
