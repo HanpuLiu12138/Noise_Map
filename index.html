@@ -9,19 +9,16 @@
     <style>
         body { margin: 0; padding: 0; }
         #map { position: absolute; top: 0; bottom: 0; width: 100%; }
-        .navbar { position: absolute; bottom: 0; width: 100%; display: none; /* This line hides the navbar */ }
+        .navbar { position: absolute; bottom: 0; width: 100%; display: flex; justify-content: center; }
         .button { padding: 10px; background-color: #f0f0f0; cursor: pointer; }
     </style>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.3.0/turf.min.js"></script>
     
-<!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 
-<!-- If you enabled Analytics in your project, add the Firebase SDK for Analytics -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
 
-<!-- Add Firebase products that you want to use -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
     <script>
@@ -47,10 +44,9 @@
 <body>
     <div id='map'></div>
     
-    <div class="navbar fixed-bottom bg-light" style="display: none;">
+    <div class="navbar fixed-bottom bg-light">
         <div id="connect_button" class="button col" role="button">Connect</div>
     </div>
-
 
     <script src='app.js'></script>
 
@@ -68,4 +64,3 @@
 </body>
 
 </html>
-
